@@ -1,6 +1,12 @@
 import express from "express";
 import multer from "multer";
-import { listarPosts, postarNovoPost, uploadImagem } from "../controllers/postsController.js";
+import { listarPosts, postarNovoPost, uploadImagem, atualizarNovoPost } from "../controllers/postsController.js";
+import cors from "cors";
+
+const corsOptions = {
+    origin: "http://localhost:8000",
+    optionsSuccessStatus: 200
+};
 
 // Configura armazenamento de arquivos em 'uploads/' no sistema de arquivos do Windows
 const storage = multer.diskStorage({
@@ -18,7 +24,7 @@ const upload = multer({ dest: "./uploads", storage });
 const routes = (app) => {
     // Habilita interpretação de JSON em requisições
     app.use(express.json());
-
+    app.use(cors(corsOptions));
     // Rota para buscar todos os posts
     app.get("/posts", listarPosts);
 
@@ -27,6 +33,8 @@ const routes = (app) => {
 
     // Rota para upload de imagem única (campo 'imagem')
     app.post("/upload", upload.single("imagem"), uploadImagem);
+
+    app.put("/upload/:id", atualizarNovoPost);
 };
 
 export default routes;
